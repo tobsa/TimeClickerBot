@@ -57,9 +57,14 @@
             this.CurrentScriptLabel = new System.Windows.Forms.Label();
             this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.OpenImageFolderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.ContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.ContextMenuStripToolStripExitMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.ContextMenuStripToolStripOpenMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.ContextMenuToolStripSeperator = new System.Windows.Forms.ToolStripSeparator();
             this.StatusStrip.SuspendLayout();
             this.panel1.SuspendLayout();
             this.MenuStrip.SuspendLayout();
+            this.ContextMenuStrip.SuspendLayout();
             this.SuspendLayout();
             // 
             // ExitButton
@@ -74,6 +79,7 @@
             // 
             // NotifyIcon
             // 
+            this.NotifyIcon.ContextMenuStrip = this.ContextMenuStrip;
             this.NotifyIcon.Icon = ((System.Drawing.Icon)(resources.GetObject("NotifyIcon.Icon")));
             this.NotifyIcon.Text = "TimeClickerBot";
             this.NotifyIcon.Visible = true;
@@ -293,6 +299,34 @@
             this.OpenImageFolderToolStripMenuItem.Text = "Open Image Folder";
             this.OpenImageFolderToolStripMenuItem.Click += new System.EventHandler(this.OpenImageFolderToolStripMenuItem_Click);
             // 
+            // ContextMenuStrip
+            // 
+            this.ContextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.ContextMenuStripToolStripOpenMenuItem,
+            this.ContextMenuToolStripSeperator,
+            this.ContextMenuStripToolStripExitMenuItem});
+            this.ContextMenuStrip.Name = "ContextMenuStrip";
+            this.ContextMenuStrip.Size = new System.Drawing.Size(188, 76);
+            // 
+            // ContextMenuStripToolStripExitMenuItem
+            // 
+            this.ContextMenuStripToolStripExitMenuItem.Name = "ContextMenuStripToolStripExitMenuItem";
+            this.ContextMenuStripToolStripExitMenuItem.Size = new System.Drawing.Size(187, 22);
+            this.ContextMenuStripToolStripExitMenuItem.Text = "Exit";
+            this.ContextMenuStripToolStripExitMenuItem.Click += new System.EventHandler(this.ContextMenuStripToolStripExitMenuItem_Click);
+            // 
+            // ContextMenuStripToolStripOpenMenuItem
+            // 
+            this.ContextMenuStripToolStripOpenMenuItem.Name = "ContextMenuStripToolStripOpenMenuItem";
+            this.ContextMenuStripToolStripOpenMenuItem.Size = new System.Drawing.Size(187, 22);
+            this.ContextMenuStripToolStripOpenMenuItem.Text = "Open TimeClickerBot";
+            this.ContextMenuStripToolStripOpenMenuItem.Click += new System.EventHandler(this.ContextMenuStripToolStripOpenMenuItem_Click);
+            // 
+            // ContextMenuToolStripSeperator
+            // 
+            this.ContextMenuToolStripSeperator.Name = "ContextMenuToolStripSeperator";
+            this.ContextMenuToolStripSeperator.Size = new System.Drawing.Size(184, 6);
+            // 
             // TimeClickerForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -316,6 +350,7 @@
             this.panel1.PerformLayout();
             this.MenuStrip.ResumeLayout(false);
             this.MenuStrip.PerformLayout();
+            this.ContextMenuStrip.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -350,6 +385,10 @@
         private System.Windows.Forms.Label CurrentScriptLabel;
         private System.Windows.Forms.ToolStripMenuItem viewToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem OpenImageFolderToolStripMenuItem;
+        private System.Windows.Forms.ContextMenuStrip ContextMenuStrip;
+        private System.Windows.Forms.ToolStripMenuItem ContextMenuStripToolStripExitMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem ContextMenuStripToolStripOpenMenuItem;
+        private System.Windows.Forms.ToolStripSeparator ContextMenuToolStripSeperator;
     }
 }
 

@@ -109,10 +109,7 @@ namespace TimeClickerBot
 
         private void NotifyIcon_MouseDoubleClick(object sender, MouseEventArgs e)
         {
-            WindowState = FormWindowState.Normal;
-            ShowInTaskbar = true;
-            NotifyIcon.Visible = false;
-            hotKeyHandler.Reload(Handle, GetType().GetHashCode());
+            OpenApplication();
         }
 
         private void ExitToolStripMenuItem_Click(object sender, EventArgs e)
@@ -166,6 +163,24 @@ namespace TimeClickerBot
         private void OpenImageFolderToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Process.Start(Path.GetDirectoryName(Application.ExecutablePath) + "\\Data\\Images");
+        }
+
+        private void ContextMenuStripToolStripExitMenuItem_Click(object sender, EventArgs e)
+        {
+            Application.Exit();
+        }
+
+        private void ContextMenuStripToolStripOpenMenuItem_Click(object sender, EventArgs e)
+        {
+            OpenApplication();
+        }
+
+        private void OpenApplication()
+        {
+            WindowState = FormWindowState.Normal;
+            ShowInTaskbar = true;
+            NotifyIcon.Visible = false;
+            hotKeyHandler.Reload(Handle, GetType().GetHashCode());
         }
     }
 }

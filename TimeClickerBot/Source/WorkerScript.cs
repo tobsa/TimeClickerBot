@@ -139,7 +139,7 @@ namespace TimeClickerBot.Source
                     if (sequence.Time == 0)
                         HandleClick(sequence);
                     else
-                        HandleClickSequence(sequence, watch);
+                        HandleClickSequence(sequence);
                 }
                 else if (sequence.Type == "screenshot")
                 {
@@ -167,8 +167,7 @@ namespace TimeClickerBot.Source
                 return;
 
             currentAmount++;
-            Console.WriteLine("Click ({0}): {1} {2}", currentAmount, click.X, click.Y);
-            //Mouse.Click(click.X, click.Y);
+            PerformAction(click.X, click.Y);
 
             if (currentAmount >= click.Amount)
             {
@@ -182,9 +181,16 @@ namespace TimeClickerBot.Source
             }
         }
 
-        private void HandleClickSequence(ClickSequence sequence, Stopwatch watch)
+        private static void PerformAction(int x, int y)
+        {
+            //Console.WriteLine("Click ({0}): {1} {2}", currentAmount, x, y);
+            Mouse.Click(x, y);
+        }
+
+        private void HandleClickSequence(ClickSequence sequence)
         {
             long time = sequence.Time;
+            var watch = new Stopwatch();
 
             while (time > 0)
             {
@@ -198,8 +204,7 @@ namespace TimeClickerBot.Source
                     break;
 
                 currentAmount++;
-                Console.WriteLine("Click ({0}): {1} {2}", currentAmount, click.X, click.Y);
-                //Mouse.Click(click.X, click.Y);
+                PerformAction(click.X, click.Y);
 
                 if (currentAmount >= click.Amount)
                 {

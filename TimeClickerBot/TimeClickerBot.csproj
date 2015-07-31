@@ -61,6 +61,7 @@
     <Compile Include="Source\ConfigHandler.cs" />
     <Compile Include="Source\GlobalHotKey.cs" />
     <Compile Include="Source\Mouse.cs" />
+    <Compile Include="Source\ScreenCapture.cs" />
     <Compile Include="Source\Worker.cs" />
     <Compile Include="Source\WorkerAutoClickScript.cs" />
     <Compile Include="Source\WorkerHandler.cs" />

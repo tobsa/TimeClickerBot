@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Diagnostics;
+using System.Drawing.Imaging;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -126,17 +128,30 @@ namespace TimeClickerBot.Source
         private void Execute(ClickSequence sequence)
         {
             sequence.IsRunning = true;
-            var watch = new Stopwatch();
 
             while (!sequence.IsDone)
             {
                 if (!Enabled)
                     break;
 
-                if (sequence.Time == 0)
-                    HandleClick(sequence);
-                else
-                    HandleClickSequence(sequence, watch);
+                if (sequence.Type == null)
+                {
+                    if (sequence.Time == 0)
+                        HandleClick(sequence);
+                    else
+                        HandleClickSequence(sequence, watch);
+                }
+                else if (sequence.Type == "screenshot")
+                {
+                    var sc = new ScreenCapture();
+                    var img = sc.CaptureScreen();
+                    
+                    var handler = new ConfigHandler("Data/cf.dat");
+                    var imageName = DateTime.Now.ToString("yyyy.MM.dd-H.mm.ss");
+                    
+                    img.Save("Data\\Images\\Image_" + imageName + "_TimeLine-" +  handler.TotalTimeLines + ".png", ImageFormat.Png);
+                    break;
+                }
             }
 
             sequence.IsDone = true;
@@ -152,8 +167,8 @@ namespace TimeClickerBot.Source
                 return;
 
             currentAmount++;
-            //Console.WriteLine("Click ({0}): {1} {2}", currentAmount, click.X, click.Y);
-            Mouse.Click(click.X, click.Y);
+            Console.WriteLine("Click ({0}): {1} {2}", currentAmount, click.X, click.Y);
+            //Mouse.Click(click.X, click.Y);
 
             if (currentAmount >= click.Amount)
             {
@@ -183,8 +198,8 @@ namespace TimeClickerBot.Source
                     break;
 
                 currentAmount++;
-                //Console.WriteLine("Click ({0}): {1} {2}", currentAmount, click.X, click.Y);
-                Mouse.Click(click.X, click.Y);
+                Console.WriteLine("Click ({0}): {1} {2}", currentAmount, click.X, click.Y);
+                //Mouse.Click(click.X, click.Y);
 
                 if (currentAmount >= click.Amount)
                 {

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,6 +14,9 @@ namespace TimeClickerBot.Source
 
         [XmlAttribute("time")]
         public int Time { get; set; }
+
+        [XmlAttribute("type")]
+        public string Type { get; set; }
 
         [XmlIgnore]
         public bool IsDone { get; set; }

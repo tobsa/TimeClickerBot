@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,6 +15,8 @@ namespace TimeClickerBot
 {
     public partial class TimeClickerForm : Form
     {
+        public const string Version = "v1.1";
+
         private readonly GlobalHotKeyHandler hotKeyHandler = new GlobalHotKeyHandler();
         private readonly WorkerHandler workerHandler = new WorkerHandler();
         private readonly ConfigHandler configHandler;
@@ -39,6 +42,9 @@ namespace TimeClickerBot
             workerHandler.Register("NewGame", script);
             workerHandler.Register("AutoClick", new WorkerAutoClickScript(10));
             workerHandler.Register("AutoBuy", new WorkerScript("Data/AutoBuyScript.xml"));
+
+            StatusLabel.Text = "TimeClickerBot " + Version + " - By Tobias Savinainen";
+            Text = "TimeClickerBot " + Version;
         }
 
         protected override void WndProc(ref Message m)
@@ -155,6 +161,11 @@ namespace TimeClickerBot
             EstimatedGameTimeValueLabel.Text = estimatedMin + "m " + estimatedSec + "s";
             TimeLinesThisSessionValueLabel.Text = script.TimeLines.ToString();
             TotalNumberOfTimeLinesValueLabel.Text = configHandler.TotalTimeLines.ToString();
+        }
+
+        private void OpenImageFolderToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Process.Start(Path.GetDirectoryName(Application.ExecutablePath) + "\\Data\\Images");
         }
     }
 }

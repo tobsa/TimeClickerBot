@@ -48,13 +48,15 @@
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.ExitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.scriptToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.ReloadScriptToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.EditScriptClickToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.NewGameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.AutoClickToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.AutoBuyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.ReloadScriptToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.EditScriptClickToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.CurrentScriptLabel = new System.Windows.Forms.Label();
+            this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.OpenImageFolderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.StatusStrip.SuspendLayout();
             this.panel1.SuspendLayout();
             this.MenuStrip.SuspendLayout();
@@ -96,8 +98,8 @@
             // 
             this.StatusLabel.Font = new System.Drawing.Font("Segoe UI", 7F);
             this.StatusLabel.Name = "StatusLabel";
-            this.StatusLabel.Size = new System.Drawing.Size(191, 17);
-            this.StatusLabel.Text = "TimeClickerBot v1.0 - By Tobias Savinainen";
+            this.StatusLabel.Size = new System.Drawing.Size(171, 17);
+            this.StatusLabel.Text = "TimeClickerBot - By Tobias Savinainen";
             // 
             // TimeLinesThisSessionLabel
             // 
@@ -190,7 +192,8 @@
             // 
             this.MenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripMenuItem1,
-            this.scriptToolStripMenuItem});
+            this.scriptToolStripMenuItem,
+            this.viewToolStripMenuItem});
             this.MenuStrip.Location = new System.Drawing.Point(0, 0);
             this.MenuStrip.Name = "MenuStrip";
             this.MenuStrip.Size = new System.Drawing.Size(237, 24);
@@ -208,7 +211,7 @@
             // ExitToolStripMenuItem
             // 
             this.ExitToolStripMenuItem.Name = "ExitToolStripMenuItem";
-            this.ExitToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.ExitToolStripMenuItem.Size = new System.Drawing.Size(92, 22);
             this.ExitToolStripMenuItem.Text = "Exit";
             this.ExitToolStripMenuItem.Click += new System.EventHandler(this.ExitToolStripMenuItem_Click);
             // 
@@ -224,20 +227,6 @@
             this.scriptToolStripMenuItem.Name = "scriptToolStripMenuItem";
             this.scriptToolStripMenuItem.Size = new System.Drawing.Size(49, 20);
             this.scriptToolStripMenuItem.Text = "Script";
-            // 
-            // ReloadScriptToolStripMenuItem
-            // 
-            this.ReloadScriptToolStripMenuItem.Name = "ReloadScriptToolStripMenuItem";
-            this.ReloadScriptToolStripMenuItem.Size = new System.Drawing.Size(155, 22);
-            this.ReloadScriptToolStripMenuItem.Text = "Reload Script";
-            this.ReloadScriptToolStripMenuItem.Click += new System.EventHandler(this.ReloadScriptToolStripMenuItem_Click);
-            // 
-            // EditScriptClickToolStripMenuItem
-            // 
-            this.EditScriptClickToolStripMenuItem.Name = "EditScriptClickToolStripMenuItem";
-            this.EditScriptClickToolStripMenuItem.Size = new System.Drawing.Size(155, 22);
-            this.EditScriptClickToolStripMenuItem.Text = "Edit Script";
-            this.EditScriptClickToolStripMenuItem.Click += new System.EventHandler(this.EditScriptClickToolStripMenuItem_Click);
             // 
             // NewGameToolStripMenuItem
             // 
@@ -265,6 +254,20 @@
             this.toolStripSeparator1.Name = "toolStripSeparator1";
             this.toolStripSeparator1.Size = new System.Drawing.Size(152, 6);
             // 
+            // ReloadScriptToolStripMenuItem
+            // 
+            this.ReloadScriptToolStripMenuItem.Name = "ReloadScriptToolStripMenuItem";
+            this.ReloadScriptToolStripMenuItem.Size = new System.Drawing.Size(155, 22);
+            this.ReloadScriptToolStripMenuItem.Text = "Reload Script";
+            this.ReloadScriptToolStripMenuItem.Click += new System.EventHandler(this.ReloadScriptToolStripMenuItem_Click);
+            // 
+            // EditScriptClickToolStripMenuItem
+            // 
+            this.EditScriptClickToolStripMenuItem.Name = "EditScriptClickToolStripMenuItem";
+            this.EditScriptClickToolStripMenuItem.Size = new System.Drawing.Size(155, 22);
+            this.EditScriptClickToolStripMenuItem.Text = "Edit Script";
+            this.EditScriptClickToolStripMenuItem.Click += new System.EventHandler(this.EditScriptClickToolStripMenuItem_Click);
+            // 
             // CurrentScriptLabel
             // 
             this.CurrentScriptLabel.AutoSize = true;
@@ -274,6 +277,21 @@
             this.CurrentScriptLabel.Size = new System.Drawing.Size(141, 17);
             this.CurrentScriptLabel.TabIndex = 17;
             this.CurrentScriptLabel.Text = "Current Script : None";
+            // 
+            // viewToolStripMenuItem
+            // 
+            this.viewToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.OpenImageFolderToolStripMenuItem});
+            this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
+            this.viewToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
+            this.viewToolStripMenuItem.Text = "View";
+            // 
+            // OpenImageFolderToolStripMenuItem
+            // 
+            this.OpenImageFolderToolStripMenuItem.Name = "OpenImageFolderToolStripMenuItem";
+            this.OpenImageFolderToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
+            this.OpenImageFolderToolStripMenuItem.Text = "Open Image Folder";
+            this.OpenImageFolderToolStripMenuItem.Click += new System.EventHandler(this.OpenImageFolderToolStripMenuItem_Click);
             // 
             // TimeClickerForm
             // 
@@ -290,7 +308,7 @@
             this.MaximizeBox = false;
             this.Name = "TimeClickerForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "TimeClickerBot - v1.0";
+            this.Text = "TimeClickerBot";
             this.Resize += new System.EventHandler(this.TimeClickerForm_Resize);
             this.StatusStrip.ResumeLayout(false);
             this.StatusStrip.PerformLayout();
@@ -330,6 +348,8 @@
         private System.Windows.Forms.ToolStripMenuItem AutoBuyToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.Label CurrentScriptLabel;
+        private System.Windows.Forms.ToolStripMenuItem viewToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem OpenImageFolderToolStripMenuItem;
     }
 }
 

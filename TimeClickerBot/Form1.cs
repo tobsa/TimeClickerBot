@@ -71,6 +71,8 @@ namespace TimeClickerBot
         private void ActivateNewGameScript()
         {
             var enabled = workerHandler.ActivateScript("NewGame");
+
+            NotifyIcon.ShowBalloonTip(1, "", enabled ? "Press F8 to stop" : "Script stopped", ToolTipIcon.None);
             
             CurrentScriptLabel.Text = enabled ? "Current Script: New Game (F8)" : "Current Script: None";
             MenuStrip.Enabled = !enabled;
@@ -79,6 +81,8 @@ namespace TimeClickerBot
         private void ActivateAutoClickScript()
         {
             var enabled = workerHandler.ActivateScript("AutoClick");
+
+            NotifyIcon.ShowBalloonTip(1, "", enabled ? "Press F7 to stop" : "Script stopped", ToolTipIcon.None);
             
             CurrentScriptLabel.Text = enabled ? "Current Script: Auto-Click (F7)" : "Current Script: None";
             MenuStrip.Enabled = !enabled;
@@ -87,6 +91,9 @@ namespace TimeClickerBot
         private void ActivateAutoBuyScript()
         {
             var enabled = workerHandler.ActivateScript("AutoBuy");
+
+
+            NotifyIcon.ShowBalloonTip(1, "", enabled ? "Press F6 to stop" : "Script stopped", ToolTipIcon.None);
             
             CurrentScriptLabel.Text = enabled ? "Current Script: Auto-Buy (F6)" : "Current Script: None";
             MenuStrip.Enabled = !enabled;
@@ -179,7 +186,7 @@ namespace TimeClickerBot
         {
             WindowState = FormWindowState.Normal;
             ShowInTaskbar = true;
-            NotifyIcon.Visible = false;
+            //NotifyIcon.Visible = false;
             hotKeyHandler.Reload(Handle, GetType().GetHashCode());
         }
     }

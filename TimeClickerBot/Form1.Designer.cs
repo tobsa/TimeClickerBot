@@ -32,6 +32,10 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TimeClickerForm));
             this.ExitButton = new System.Windows.Forms.Button();
             this.NotifyIcon = new System.Windows.Forms.NotifyIcon(this.components);
+            this.ContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.ContextMenuStripToolStripOpenMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.ContextMenuToolStripSeperator = new System.Windows.Forms.ToolStripSeparator();
+            this.ContextMenuStripToolStripExitMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.Timer = new System.Windows.Forms.Timer(this.components);
             this.StatusStrip = new System.Windows.Forms.StatusStrip();
             this.StatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
@@ -54,17 +58,13 @@
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.ReloadScriptToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.EditScriptClickToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.CurrentScriptLabel = new System.Windows.Forms.Label();
             this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.OpenImageFolderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.ContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.ContextMenuStripToolStripExitMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.ContextMenuStripToolStripOpenMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.ContextMenuToolStripSeperator = new System.Windows.Forms.ToolStripSeparator();
+            this.CurrentScriptLabel = new System.Windows.Forms.Label();
+            this.ContextMenuStrip.SuspendLayout();
             this.StatusStrip.SuspendLayout();
             this.panel1.SuspendLayout();
             this.MenuStrip.SuspendLayout();
-            this.ContextMenuStrip.SuspendLayout();
             this.SuspendLayout();
             // 
             // ExitButton
@@ -84,6 +84,34 @@
             this.NotifyIcon.Text = "TimeClickerBot";
             this.NotifyIcon.Visible = true;
             this.NotifyIcon.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.NotifyIcon_MouseDoubleClick);
+            // 
+            // ContextMenuStrip
+            // 
+            this.ContextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.ContextMenuStripToolStripOpenMenuItem,
+            this.ContextMenuToolStripSeperator,
+            this.ContextMenuStripToolStripExitMenuItem});
+            this.ContextMenuStrip.Name = "ContextMenuStrip";
+            this.ContextMenuStrip.Size = new System.Drawing.Size(188, 54);
+            // 
+            // ContextMenuStripToolStripOpenMenuItem
+            // 
+            this.ContextMenuStripToolStripOpenMenuItem.Name = "ContextMenuStripToolStripOpenMenuItem";
+            this.ContextMenuStripToolStripOpenMenuItem.Size = new System.Drawing.Size(187, 22);
+            this.ContextMenuStripToolStripOpenMenuItem.Text = "Open TimeClickerBot";
+            this.ContextMenuStripToolStripOpenMenuItem.Click += new System.EventHandler(this.ContextMenuStripToolStripOpenMenuItem_Click);
+            // 
+            // ContextMenuToolStripSeperator
+            // 
+            this.ContextMenuToolStripSeperator.Name = "ContextMenuToolStripSeperator";
+            this.ContextMenuToolStripSeperator.Size = new System.Drawing.Size(184, 6);
+            // 
+            // ContextMenuStripToolStripExitMenuItem
+            // 
+            this.ContextMenuStripToolStripExitMenuItem.Name = "ContextMenuStripToolStripExitMenuItem";
+            this.ContextMenuStripToolStripExitMenuItem.Size = new System.Drawing.Size(187, 22);
+            this.ContextMenuStripToolStripExitMenuItem.Text = "Exit";
+            this.ContextMenuStripToolStripExitMenuItem.Click += new System.EventHandler(this.ContextMenuStripToolStripExitMenuItem_Click);
             // 
             // Timer
             // 
@@ -274,16 +302,6 @@
             this.EditScriptClickToolStripMenuItem.Text = "Edit Script";
             this.EditScriptClickToolStripMenuItem.Click += new System.EventHandler(this.EditScriptClickToolStripMenuItem_Click);
             // 
-            // CurrentScriptLabel
-            // 
-            this.CurrentScriptLabel.AutoSize = true;
-            this.CurrentScriptLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.CurrentScriptLabel.Location = new System.Drawing.Point(23, 35);
-            this.CurrentScriptLabel.Name = "CurrentScriptLabel";
-            this.CurrentScriptLabel.Size = new System.Drawing.Size(141, 17);
-            this.CurrentScriptLabel.TabIndex = 17;
-            this.CurrentScriptLabel.Text = "Current Script : None";
-            // 
             // viewToolStripMenuItem
             // 
             this.viewToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -299,33 +317,15 @@
             this.OpenImageFolderToolStripMenuItem.Text = "Open Image Folder";
             this.OpenImageFolderToolStripMenuItem.Click += new System.EventHandler(this.OpenImageFolderToolStripMenuItem_Click);
             // 
-            // ContextMenuStrip
+            // CurrentScriptLabel
             // 
-            this.ContextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.ContextMenuStripToolStripOpenMenuItem,
-            this.ContextMenuToolStripSeperator,
-            this.ContextMenuStripToolStripExitMenuItem});
-            this.ContextMenuStrip.Name = "ContextMenuStrip";
-            this.ContextMenuStrip.Size = new System.Drawing.Size(188, 76);
-            // 
-            // ContextMenuStripToolStripExitMenuItem
-            // 
-            this.ContextMenuStripToolStripExitMenuItem.Name = "ContextMenuStripToolStripExitMenuItem";
-            this.ContextMenuStripToolStripExitMenuItem.Size = new System.Drawing.Size(187, 22);
-            this.ContextMenuStripToolStripExitMenuItem.Text = "Exit";
-            this.ContextMenuStripToolStripExitMenuItem.Click += new System.EventHandler(this.ContextMenuStripToolStripExitMenuItem_Click);
-            // 
-            // ContextMenuStripToolStripOpenMenuItem
-            // 
-            this.ContextMenuStripToolStripOpenMenuItem.Name = "ContextMenuStripToolStripOpenMenuItem";
-            this.ContextMenuStripToolStripOpenMenuItem.Size = new System.Drawing.Size(187, 22);
-            this.ContextMenuStripToolStripOpenMenuItem.Text = "Open TimeClickerBot";
-            this.ContextMenuStripToolStripOpenMenuItem.Click += new System.EventHandler(this.ContextMenuStripToolStripOpenMenuItem_Click);
-            // 
-            // ContextMenuToolStripSeperator
-            // 
-            this.ContextMenuToolStripSeperator.Name = "ContextMenuToolStripSeperator";
-            this.ContextMenuToolStripSeperator.Size = new System.Drawing.Size(184, 6);
+            this.CurrentScriptLabel.AutoSize = true;
+            this.CurrentScriptLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.CurrentScriptLabel.Location = new System.Drawing.Point(23, 35);
+            this.CurrentScriptLabel.Name = "CurrentScriptLabel";
+            this.CurrentScriptLabel.Size = new System.Drawing.Size(141, 17);
+            this.CurrentScriptLabel.TabIndex = 17;
+            this.CurrentScriptLabel.Text = "Current Script : None";
             // 
             // TimeClickerForm
             // 
@@ -337,6 +337,7 @@
             this.Controls.Add(this.StatusStrip);
             this.Controls.Add(this.MenuStrip);
             this.Controls.Add(this.ExitButton);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.MenuStrip;
             this.MaximizeBox = false;
@@ -344,13 +345,13 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "TimeClickerBot";
             this.Resize += new System.EventHandler(this.TimeClickerForm_Resize);
+            this.ContextMenuStrip.ResumeLayout(false);
             this.StatusStrip.ResumeLayout(false);
             this.StatusStrip.PerformLayout();
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             this.MenuStrip.ResumeLayout(false);
             this.MenuStrip.PerformLayout();
-            this.ContextMenuStrip.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 

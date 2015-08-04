@@ -11,6 +11,10 @@ namespace TimeClickerBot.Source
     {
         private readonly string filename;
 
+        private const int TotalTimeLinesIndex = 0;
+        private const int StartPositionXIndex = 1;
+        private const int StartPositionYIndex = 2;
+
         public ConfigHandler(string filename)
         {
             this.filename = filename;
@@ -18,17 +22,29 @@ namespace TimeClickerBot.Source
         }
 
         public int TotalTimeLines { get; set; }
+        public int StartLocationX { get; set; }
+        public int StartLocationY { get; set; }
 
         public void Load()
         {
-            var value = File.ReadAllText(filename);
+            var lines = File.ReadAllLines(filename);
+            lines = lines.Where(x => !x.StartsWith(";")).ToArray();
 
-            TotalTimeLines = int.Parse(value);
+            TotalTimeLines = int.Parse(lines[TotalTimeLinesIndex]);
+            StartLocationX = int.Parse(lines[StartPositionXIndex]);
+            StartLocationY = int.Parse(lines[StartPositionYIndex]);
         }
 
         public void Save()
         {
-            File.WriteAllText(filename, TotalTimeLines.ToString());
+            var lines = new[]
+            {
+                TotalTimeLines.ToString(),
+                StartLocationX.ToString(),
+                StartLocationY.ToString()
+            };
+
+            File.WriteAllLines(filename, lines);
         }
     }
 }

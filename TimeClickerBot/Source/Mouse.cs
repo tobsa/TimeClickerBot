@@ -10,7 +10,7 @@ namespace TimeClickerBot.Source
     public class Mouse
     {
         [System.Runtime.InteropServices.DllImport("user32.dll")]
-        static extern bool SetCursorPos(int x, int y);
+        private static extern bool SetCursorPos(int x, int y);
 
         [System.Runtime.InteropServices.DllImport("user32.dll")]
         public static extern void mouse_event(int dwFlags, int dx, int dy, int cButtons, int dwExtraInfo);
@@ -29,6 +29,11 @@ namespace TimeClickerBot.Source
             SetCursorPos(xpos, ypos);
             mouse_event(0x02, xpos, ypos, 0, 0);
             mouse_event(0x04, xpos, ypos, 0, 0);
+        }
+
+        public static void SetPosition(int x, int y)
+        {
+            SetCursorPos(x, y);
         }
     }
 }

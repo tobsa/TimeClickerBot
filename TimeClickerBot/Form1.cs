@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using TimeClickerBot.Source;
 
@@ -15,11 +13,13 @@ namespace TimeClickerBot
 {
     public partial class TimeClickerForm : Form
     {
-        public const string Version = "v1.1";
+        public const string Version = "v1.2";
 
         private readonly GlobalHotKeyHandler hotKeyHandler = new GlobalHotKeyHandler();
-        private readonly WorkerHandler workerHandler = new WorkerHandler();
+        private readonly WorkerScriptHandler scriptHandler = new WorkerScriptHandler();
         private readonly ConfigHandler configHandler;
+
+        private bool reallyClose;
 
         public TimeClickerForm()
         {
@@ -31,20 +31,22 @@ namespace TimeClickerBot
 
             configHandler = new ConfigHandler("Data/cf.dat");
 
-            var script = new WorkerScript("Data/NewGameScript.xml");
-            script.SequenceDone += (o, k) =>
+            var loader = new ScriptXmlLoader();
+            var script = new WorkerScript(loader.Load(ScriptInfo.AutoPlayPath));
+            script.Completed += (source, args) =>
             {
                 configHandler.Load();
                 configHandler.TotalTimeLines++;
                 configHandler.Save();
             };
 
-            workerHandler.Register("NewGame", script);
-            workerHandler.Register("AutoClick", new WorkerAutoClickScript(10));
-            workerHandler.Register("AutoBuy", new WorkerScript("Data/AutoBuyScript.xml"));
+            scriptHandler.Register(ScriptInfo.AutoPlay, script);
+            scriptHandler.Register(ScriptInfo.AutoClick, new WorkerAutoClickScript(10));
+            scriptHandler.Register(ScriptInfo.AutoBuy, new WorkerScript(loader.Load(ScriptInfo.AutoBuyPath)));
 
             StatusLabel.Text = "TimeClickerBot " + Version + " - By Tobias Savinainen";
             Text = "TimeClickerBot " + Version;
+            Location = new Point() { X = configHandler.StartLocationX, Y = configHandler.StartLocationY };
         }
 
         protected override void WndProc(ref Message m)
@@ -60,7 +62,7 @@ namespace TimeClickerBot
                         ActivateAutoClickScript();
                         break;
                     case Keys.F8:
-                        ActivateNewGameScript();
+                        ActivateAutoPlayScript();
                         break;
                 }
             }
@@ -68,39 +70,45 @@ namespace TimeClickerBot
             base.WndProc(ref m);
         }
 
-        private void ActivateNewGameScript()
+        private bool ActivateScript(string scriptName, string key)
         {
-            var enabled = workerHandler.ActivateScript("NewGame");
+            var enabled = scriptHandler.ActivateScript(scriptName);
 
-            NotifyIcon.ShowBalloonTip(1, "", enabled ? "Press F8 to stop" : "Script stopped", ToolTipIcon.None);
-            
-            CurrentScriptLabel.Text = enabled ? "Current Script: New Game (F8)" : "Current Script: None";
+            var enabledText = scriptName + " (" + key + ") is enabled";
+            var disabledText = scriptName + " (" + key + ") is disabled";
+
+            NotifyIcon.ShowBalloonTip(1, "", enabled ? enabledText : disabledText, ToolTipIcon.None);
+
+            CurrentScriptLabel.Text = enabled ? "" + scriptName + " (" + key + ")" : "None";
             MenuStrip.Enabled = !enabled;
+            CurrentScriptLabel.ForeColor = enabled ? Color.DarkGreen : DefaultForeColor;
+
+            return enabled;
+        }
+
+        private void ActivateAutoPlayScript()
+        {
+            ActivateScript(ScriptInfo.AutoPlay, "F8");
+            AutoPlayStatsGroupBox.Enabled = true;
         }
 
         private void ActivateAutoClickScript()
         {
-            var enabled = workerHandler.ActivateScript("AutoClick");
+            var enabled = ActivateScript(ScriptInfo.AutoClick, "F7");
 
-            NotifyIcon.ShowBalloonTip(1, "", enabled ? "Press F7 to stop" : "Script stopped", ToolTipIcon.None);
-            
-            CurrentScriptLabel.Text = enabled ? "Current Script: Auto-Click (F7)" : "Current Script: None";
-            MenuStrip.Enabled = !enabled;
+            AutoPlayStatsGroupBox.Enabled = !enabled;
         }
 
         private void ActivateAutoBuyScript()
         {
-            var enabled = workerHandler.ActivateScript("AutoBuy");
+            var enabled = ActivateScript(ScriptInfo.AutoBuy, "F6");
 
-
-            NotifyIcon.ShowBalloonTip(1, "", enabled ? "Press F6 to stop" : "Script stopped", ToolTipIcon.None);
-            
-            CurrentScriptLabel.Text = enabled ? "Current Script: Auto-Buy (F6)" : "Current Script: None";
-            MenuStrip.Enabled = !enabled;
+            AutoPlayStatsGroupBox.Enabled = !enabled;
         }
 
         private void ExitButton_Click(object sender, EventArgs e)
         {
+            reallyClose = true;
             Application.Exit();
         }
 
@@ -110,7 +118,7 @@ namespace TimeClickerBot
                 return;
 
             NotifyIcon.Visible = true;
-            ShowInTaskbar = false;
+            ShowInTaskbar = true;
             hotKeyHandler.Reload(Handle, GetType().GetHashCode());
         }
 
@@ -121,38 +129,44 @@ namespace TimeClickerBot
 
         private void ExitToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            reallyClose = true;
             Application.Exit();
         }
 
         private void ReloadScriptToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            workerHandler.ReloadScript("NewGame", "Data/NewGameScript.xml");
-            workerHandler.ReloadScript("AutoBuy", "Data/AutoBuyScript.xml");
+            var loader = new ScriptXmlLoader();
+            var script = new WorkerScript(loader.Load(ScriptInfo.AutoPlayPath));
+            script.Completed += (source, args) =>
+            {
+                configHandler.Load();
+                configHandler.TotalTimeLines++;
+                configHandler.Save();
+            };
+
+            configHandler.Load();
+            scriptHandler.ReloadScript(ScriptInfo.AutoPlay, script);
+            scriptHandler.ReloadScript(ScriptInfo.AutoBuy, new WorkerScript(loader.Load(ScriptInfo.AutoBuyPath)));
         }
 
-        private void EditScriptClickToolStripMenuItem_Click(object sender, EventArgs e)
+        private void ToolStripMenuItemAutoPlayActivate_Click(object sender, EventArgs e)
         {
-            Process.Start("Data\\NewGameScript.xml");
+            ActivateAutoPlayScript();
         }
 
-        private void NewGameToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            ActivateNewGameScript();
-        }
-
-        private void AutoClickToolStripMenuItem_Click(object sender, EventArgs e)
+        private void ToolStripMenuItemAutoClickActivateScript_Click(object sender, EventArgs e)
         {
             ActivateAutoClickScript();
         }
 
-        private void AutoBuyToolStripMenuItem_Click(object sender, EventArgs e)
+        private void ToolStripMenuItemAutoBuyActivateScript_Click(object sender, EventArgs e)
         {
             ActivateAutoBuyScript();
         }
 
         private void Timer_Tick(object sender, EventArgs e)
         {
-            var script = workerHandler.GetScript<WorkerScript>("NewGame");
+            var script = scriptHandler.GetWorkerScript<WorkerScript>(ScriptInfo.AutoPlay);
 
             var ms = script.EstimatedTime;
             var estimatedMin = (ms / 1000) / 60;
@@ -174,6 +188,7 @@ namespace TimeClickerBot
 
         private void ContextMenuStripToolStripExitMenuItem_Click(object sender, EventArgs e)
         {
+            reallyClose = true;
             Application.Exit();
         }
 
@@ -186,7 +201,27 @@ namespace TimeClickerBot
         {
             WindowState = FormWindowState.Normal;
             ShowInTaskbar = true;
-            //NotifyIcon.Visible = false;
+            hotKeyHandler.Reload(Handle, GetType().GetHashCode());
+        }
+
+        private void ToolStripMenuItemAutoPlayEditScript_Click(object sender, EventArgs e)
+        {
+            Process.Start(ScriptInfo.AutoPlayPath.Replace("/", "\\\\"));
+        }
+
+        private void ToolStripMenuItemAutoBuyEditScript_Click(object sender, EventArgs e)
+        {
+            Process.Start(ScriptInfo.AutoBuyPath.Replace("/", "\\\\"));
+        }
+
+        private void TimeClickerForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (reallyClose) 
+                return;
+
+            e.Cancel = true;
+            WindowState = FormWindowState.Minimized;
+            ShowInTaskbar = false;
             hotKeyHandler.Reload(Handle, GetType().GetHashCode());
         }
     }

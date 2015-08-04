@@ -1,93 +1,29 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
 using System.Diagnostics;
-using System.Drawing.Imaging;
-using System.Globalization;
-using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
-using System.Xml.Serialization;
 
 namespace TimeClickerBot.Source
 {
-    public class WorkerScript : Worker
+    public class WorkerScript : BaseWorkerScript
     {
-        private readonly ClickSequenceCollection collection;
-        private int currentSequence;
-        private int currentClick;
-        private int currentAmount;
+        private readonly Timer timer = new Timer();
         private readonly Stopwatch watch = new Stopwatch();
+        private readonly Script script;
+        
+        private int currentAction;
 
-        private bool _enabled;
+        public event EventHandler Completed;
 
-        public event EventHandler SequenceDone;
 
-        public WorkerScript(string filename)
+        public WorkerScript(Script script)
         {
-            var serializer = new XmlSerializer(typeof(ClickSequenceCollection));
-            var reader = new StreamReader(filename);
-            collection = (ClickSequenceCollection)serializer.Deserialize(reader);
-            reader.Close();
+            this.script = script;
 
-            Timer.Elapsed += Execute;
-        }
-
-        public long EstimatedTime
-        {
-            get
-            {
-                var sum1 = collection.ClickSequences.Where(x => x.Time == 0).Sum(x => x.Clicks.Sum(y => y.Amount * y.Delay));
-                var sum2 = collection.ClickSequences.Where(x => x.Time != 0).Sum(x => x.Time);
-
-                return sum1 + sum2;
-            }
-        }
-
-        public int TimeLines { get; set; }
-
-        public long SessionTime { get { return watch.ElapsedMilliseconds; } }
-
-        public override bool Enabled
-        {
-            get
-            {
-                return _enabled;
-            }
-            set
-            {
-                _enabled = value;
-                Timer.Enabled = value;
-                currentSequence = 0;
-                currentClick = 0;
-                currentAmount = 0;
-
-                foreach (var sequence in collection.ClickSequences)
-                {
-                    sequence.IsDone = false;
-                    sequence.IsRunning = false;
-                }
-
-                if (value)
-                {
-                    TimeLines = 0;
-                    watch.Reset();
-                    watch.Start();
-                }
-                else
-                {
-                    watch.Stop();
-                }
-            }
-        }
-
-        private void Reset()
-        {
-            currentClick = 0;
-            currentAmount = 0;
+            timer.Elapsed += Execute;
         }
 
         public override void Execute(object source, ElapsedEventArgs args)
@@ -95,131 +31,77 @@ namespace TimeClickerBot.Source
             if (!Enabled)
                 return;
 
-            var sequence = collection.ClickSequences[currentSequence];
+            var action = script.Actions[currentAction];
 
-            if (sequence.IsDone)
+            switch (action.State)
             {
-                Reset();
-                sequence.IsRunning = false;
-                sequence.IsDone = false;
+                case ActionState.Completed:
+                    action.State = ActionState.Idle;
+                    currentAction++;
 
-                currentSequence++;
+                    if (currentAction >= script.Actions.Count)
+                    {
+                        currentAction = 0;
+                        TimeLines++;
+                        watch.Restart();
 
-                if (currentSequence >= collection.ClickSequences.Count)
-                {
-                    currentSequence = 0;
-                    TimeLines++;
-                    watch.Restart();
+                        if (Completed != null)
+                            Completed(this, EventArgs.Empty);
+                    }
 
-                    var handler = SequenceDone;
-                    if (handler != null)
-                        handler(this, EventArgs.Empty);
-                }
-
-                return;
-            }
-
-            if (!sequence.IsRunning)
-            {   
-                Execute(sequence);
+                    break;
+                case ActionState.Idle:
+                    action.State = ActionState.Running;
+                    action.Execute();
+                    action.State = ActionState.Completed;
+                    break;
             }
         }
 
-        private void Execute(ClickSequence sequence)
+        private bool enabled;
+        public override bool Enabled
         {
-            sequence.IsRunning = true;
-
-            while (!sequence.IsDone)
+            get { return enabled; }
+            set
             {
-                if (!Enabled)
-                    break;
+                enabled = value;
+                timer.Enabled = value;
 
-                if (sequence.Type == null)
+                currentAction = 0;
+
+                foreach (var action in script.Actions)
+                    action.State = ActionState.Idle;
+
+                if (value)
                 {
-                    if (sequence.Time == 0)
-                        HandleClick(sequence);
-                    else
-                        HandleClickSequence(sequence);
+                    watch.Reset();
+                    watch.Start();
+                    TimeLines = 0;
                 }
-                else if (sequence.Type == "screenshot")
+                else 
                 {
-                    var sc = new ScreenCapture();
-                    var img = sc.CaptureScreen();
-                    
-                    var handler = new ConfigHandler("Data/cf.dat");
-                    var imageName = DateTime.Now.ToString("yyyy.MM.dd-H.mm.ss");
-                    
-                    img.Save("Data\\Images\\Image_" + imageName + "_TimeLine-" +  handler.TotalTimeLines + ".png", ImageFormat.Png);
-                    break;
+                    watch.Stop();
                 }
             }
-
-            sequence.IsDone = true;
-            sequence.IsRunning = false;
         }
 
-        private void HandleClick(ClickSequence sequence)
+        public long EstimatedTime
         {
-            var click = sequence.Clicks[currentClick];
-            Thread.Sleep(click.Delay);
-
-            if (!Enabled)
-                return;
-
-            currentAmount++;
-            PerformAction(click.X, click.Y);
-
-            if (currentAmount >= click.Amount)
+            get
             {
-                currentClick++;
-                currentAmount = 0;
+                var sum1 = script.Actions.Where(x => x.GetType() == typeof(ActionMouse)).Cast<ActionMouse>().Sum(x => x.Amount * x.Delay);
+                var sum2 = script.Actions.Where(x => x.GetType() == typeof(ActionKeyboard)).Cast<ActionKeyboard>().Sum(x => x.Amount * x.Delay);
+                var sum3 = script.Actions.Where(x => x.GetType() == typeof(ActionLoop)).Cast<ActionLoop>().Sum(x => x.Time);
 
-                if (currentClick >= sequence.Clicks.Count)
-                {
-                    sequence.IsDone = true;
-                }
+                return sum1 + sum2 + sum3;
             }
         }
 
-        private static void PerformAction(int x, int y)
+        public long SessionTime
         {
-            //Console.WriteLine("Click ({0}): {1} {2}", currentAmount, x, y);
-            Mouse.Click(x, y);
+            get { return watch.ElapsedMilliseconds; }
         }
 
-        private void HandleClickSequence(ClickSequence sequence)
-        {
-            long time = sequence.Time;
-            var watch = new Stopwatch();
-
-            while (time > 0)
-            {
-                if (!Enabled)
-                    break;
-
-                var click = sequence.Clicks[currentClick];
-                Thread.Sleep(click.Delay);
-
-                if (!Enabled)
-                    break;
-
-                currentAmount++;
-                PerformAction(click.X, click.Y);
-
-                if (currentAmount >= click.Amount)
-                {
-                    currentClick++;
-                    currentAmount = 0;
-
-                    if (currentClick >= sequence.Clicks.Count)
-                        currentClick = 0;
-                }
-
-                time -= watch.ElapsedMilliseconds;
-                watch.Restart();
-            }
-
-            sequence.IsDone = true;
-        }
+        public int TimeLines { get; set; }
     }
 }

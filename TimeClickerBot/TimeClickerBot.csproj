@@ -55,17 +55,25 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Source\Click.cs" />
-    <Compile Include="Source\ClickSequenceCollection.cs" />
-    <Compile Include="Source\ClickSequence.cs" />
-    <Compile Include="Source\ConfigHandler.cs" />
-    <Compile Include="Source\GlobalHotKey.cs" />
+    <Compile Include="Source\IActionData.cs" />
+    <Compile Include="Source\ActionMouseCircle.cs" />
     <Compile Include="Source\Mouse.cs" />
-    <Compile Include="Source\ScreenCapture.cs" />
-    <Compile Include="Source\Worker.cs" />
-    <Compile Include="Source\WorkerAutoClickScript.cs" />
-    <Compile Include="Source\WorkerHandler.cs" />
+    <Compile Include="Source\Screen.cs" />
+    <Compile Include="Source\WorkerScriptHandler.cs" />
     <Compile Include="Source\WorkerScript.cs" />
+    <Compile Include="Source\ConfigHandler.cs" />
+    <Compile Include="Source\ActionLoop.cs" />
+    <Compile Include="Source\ActionScreenshot.cs" />
+    <Compile Include="Source\IScriptLoader.cs" />
+    <Compile Include="Source\Script.cs" />
+    <Compile Include="Source\ScriptXmlLoader.cs" />
+    <Compile Include="Source\Action.cs" />
+    <Compile Include="Source\ActionKeyboard.cs" />
+    <Compile Include="Source\ActionMouse.cs" />
+    <Compile Include="Source\GlobalHotKey.cs" />
+    <Compile Include="Source\BaseWorkerScript.cs" />
+    <Compile Include="Source\ScriptInfo.cs" />
+    <Compile Include="Source\WorkerAutoClickScript.cs" />
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
